@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <!-- Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="keywords" content="" />
+    <!-- //Meta Tags -->
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+
+    <!-- Css -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css" media="all" />
+    <link rel="stylesheet" href="{% static 'css/bar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/pignose.calender.css' %}" />
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" media="all" />
+    <link rel="stylesheet" href="{% static 'css/style4.css' %}">
+    <link href="{% static 'css/fontawesome-all.css' %}" rel="stylesheet">
+
+    <link href="//fonts.googleapis.com/css?family=Poiret+One" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+<!--<nav class="navbar navbar-default sticky-top nav--primary">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        shj
+    </div>
+</nav>-->
+<nav class="navbar navbar-expand-lg sticky-top navbar-light bg-light">
+    <div class="navbar-header">
+        <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+        {% block nav %}
+        {% endblock %}
+
+</nav>
+
+
+
+<div class="wrapper">
+    <!-- Sidebar Holder -->
+    <nav id="sidebar" class="nav--side">
+        <div class="sidebar-header">
+            <h1>
+                <a href="{% url 'checkin-list' %}">Sports</a>
+            </h1>
+            <span>S</span>
+        </div>
+        <div class="profile-bg"></div>
+        <ul class="list-unstyled components">
+            <li class="active">
+                <a href="{% url 'checkin-list' %}">
+                    <i class="fas fa-cart-arrow-down"></i>
+                    Checkin
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'checkout' %}">
+                <i class="fas fa-cart-plus"></i>
+                    Checkout
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'students' %}">
+                    <i class="fas fa-users"></i>
+                    Student
+                </a>
+            </li>
+            <li>
+                <a href="#sport" data-toggle="collapse" aria-expanded="false" id="sport-main">
+                    <i class="fas fa-volleyball-ball"></i>
+                    Sports
+                    <i class="fas fa-angle-down fa-pull-right"></i>
+                </a>
+                <ul class="collapse list-unstyled" id="sport">
+
+                    <li>
+                        {% include 'sport/CreateSport.html' %}
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+</div>
+
+
+
+
+<script src="{% static 'js/jquery-2.2.3.min.js' %}"></script>
+<!-- Sidebar-nav Js -->
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
+<!--// Sidebar-nav Js -->
+
+<!-- dropdown nav -->
+<script>
+    $(document).ready(function () {
+        $(".dropdown").hover(
+            function () {
+                $('.dropdown-menu', this).stop(true, true).slideDown("fast");
+                $(this).toggleClass('open');
+            },
+            function () {
+                $('.dropdown-menu', this).stop(true, true).slideUp("fast");
+                $(this).toggleClass('open');
+            }
+        );
+    });
+</script>
+<!-- //dropdown nav -->
+
+<!-- Js for bootstrap working-->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!-- //Js for bootstrap working -->
+
+{% block script %}{% endblock %}
+
+<script>
+
+var sport = document.getElementById("sport-main");
+sport.addEventListener("click",()=>{
+    var url ="{% url 'all_sport' %}";
+    var ul = document.getElementById("sport");
+    var xhr = new XMLHttpRequest;
+    var content ="";
+    var last= ul.lastElementChild.outerHTML;
+
+    xhr.open('GET',url,true);
+    xhr.onload = function(){
+        if(this.status==200){
+            var response = JSON.parse(this.responseText);
+            for(var res in response){
+                const id = response[res]["id"];
+                var href ="{% url 'list_item' item_pk=12345 %}".replace(/12345/, id.toString());
+                content += " <li><a href="+href+">"+response[res]["name"]+"</a></li>";
+                // console.log(id);
+            }
+            content += last;
+            // console.log(content);
+            ul.innerHTML = content;
+        }
+    }
+    xhr.send();
+});
+
+
+// name.addEventListener("onkeyup",()=>{
+//     console.log(name.value);
+// });
+
+</script>
+
+</body>
+
+</html>
